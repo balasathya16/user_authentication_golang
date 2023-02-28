@@ -2,13 +2,13 @@
 
 package main
 
-import "github.com/gofiber/fiber/v2"
+import "github.com/gofiber/fiber"
 
 func main() {
 	app := fiber.New()
 
-	app.Get(path:"/", func(c *fiber.Ctx) error {
-		return c.SendString(body:"hi there")
+	app.Get("/", func(c *fiber.Ctx) error {
+		return c.SendString()
 	})
 
 	app.Listen(addr: ":8000")
