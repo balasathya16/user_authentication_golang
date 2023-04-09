@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"os"
 	"time"
 	"userauth/initializers"
 	"userauth/models"
@@ -100,7 +101,18 @@ func Login(c *gin.Context) {
 	})
 
 	// Sign and get the complete encoded token as a string using the secret
-	tokenString, err := token.SignedString(hmacSampleSecret)
+	tokenString, err := token.SignedString(os.Getenv("SECRET"))
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "invalid to create token",
+		})
+
+		return
+	}
 	//send response
 
+	c.JSON(http.StatusOK, gin.H{
+		"token": tokenString,
+	})
 }
