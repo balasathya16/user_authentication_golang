@@ -82,6 +82,15 @@ func Login(c *gin.Context) {
 	}
 	//compare sent in user password with saved password hash
 
+	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(body.Password))
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "invalid email or password",
+		})
+
+		return
+	}
 	//generate jwt token
 
 	//send response
