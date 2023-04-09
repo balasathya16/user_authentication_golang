@@ -8,7 +8,7 @@ import (
 	"userauth/models"
 
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -101,11 +101,11 @@ func Login(c *gin.Context) {
 	})
 
 	// Sign and get the complete encoded token as a string using the secret
-	tokenString, err := token.SignedString(os.Getenv("SECRET"))
+	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET")))
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "invalid to create token",
+			"error": "Failed to create token",
 		})
 
 		return
