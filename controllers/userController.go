@@ -52,3 +52,14 @@ func Signup(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{})
 }
+
+func Login(c *gin.Context) {
+	// get email, password from request body
+
+	//look up requested user
+
+	//compare sent in user password with saved password hash
+
+	//generate jwt token
+
+}
