@@ -55,11 +55,35 @@ func Signup(c *gin.Context) {
 
 func Login(c *gin.Context) {
 	// get email, password from request body
+	var body struct {
+		Email    string
+		Password string
+	}
 
+	if c.Bind(&body) != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "failed to read body",
+		})
+
+		return
+	}
 	//look up requested user
 
+	var user models.User
+
+	initializers.DB.First(&user, "email = ?", body.Email)
+
+	if user.ID == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "invalid email or password",
+		})
+
+		return
+	}
 	//compare sent in user password with saved password hash
 
 	//generate jwt token
+
+	//send response
 
 }
