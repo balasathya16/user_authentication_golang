@@ -2,10 +2,12 @@ package controllers
 
 import (
 	"net/http"
+	"time"
 	"userauth/initializers"
 	"userauth/models"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -92,7 +94,13 @@ func Login(c *gin.Context) {
 		return
 	}
 	//generate jwt token
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"sub": user.ID,
+		"exp": time.Now().Add(time.Hour * 24 * 30).Unix(),
+	})
 
+	// Sign and get the complete encoded token as a string using the secret
+	tokenString, err := token.SignedString(hmacSampleSecret)
 	//send response
 
 }
