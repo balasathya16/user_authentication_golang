@@ -21,15 +21,20 @@ func RequireAuth(c *gin.Context) {
 		c.AbortWithStatus(http.StatusUnauthorized)
 	}
 
+	//decode, validate
+
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+
 
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 		return []byte(os.Getenv("SECRET")), nil
-	})
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+
+	})
+
 
 		//check expiration
 
@@ -39,14 +44,21 @@ func RequireAuth(c *gin.Context) {
 		}
 		// find the user with token sub
 		var user models.User
-		initializers.DB.First(&user, 10)
+		initializers.DB.First(&user, claims["sub"])
+
+		if user.ID == 0 {
+			c.AbortWithStatus(http.StatusUnauthorized)
+
+		}
+
 		//attach to request
+
+		c.Set("user", user)
 
 		//continue
 
 		c.Next()
 
-		fmt.Println(claims["foo"], claims["nbf"])
 	} else {
 		c.AbortWithStatus(http.StatusUnauthorized)
 
