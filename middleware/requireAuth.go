@@ -15,6 +15,13 @@ func RequireAuth(c *gin.Context) {
 		c.AbortWithStatus(http.StatusUnauthorized)
 	}
 
+	// decode & validate
+
+	// check the exp
+
+	// Find the user with token in subject
+
+	// Attach token to request
 	//continue
 
 	c.Next()
