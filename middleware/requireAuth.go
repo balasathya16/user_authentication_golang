@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
@@ -30,17 +31,23 @@ func RequireAuth(c *gin.Context) {
 	})
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+
+		// check the exp
+
+		if float64(time.Now().Unix()) > claims["exp"].(float64) {
+			c.AbortWithStatus(http.StatusUnauthorized)
+
+		}
+		// Find the user with token in subject
+
+		// Attach token to request
+		//continue
+
+		c.Next()
 		fmt.Println(claims["foo"], claims["nbf"])
 	} else {
-		fmt.Println(err)
+		c.AbortWithStatus(http.StatusUnauthorized)
+
 	}
 
-	// check the exp
-
-	// Find the user with token in subject
-
-	// Attach token to request
-	//continue
-
-	c.Next()
 }
