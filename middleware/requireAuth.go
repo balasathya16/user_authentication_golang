@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"os"
 	"time"
+	"userauth/initializers"
+	"userauth/models"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
@@ -40,7 +42,16 @@ func RequireAuth(c *gin.Context) {
 		}
 		// Find the user with token in subject
 
+		var user models.User
+		initializers.DB.First(&user, claims["sub"])
+
+		if user.ID == 0 {
+			c.AbortWithStatus(http.StatusUnauthorized)
+
+		}
 		// Attach token to request
+
+		c.Set("user", user)
 		//continue
 
 		c.Next()
